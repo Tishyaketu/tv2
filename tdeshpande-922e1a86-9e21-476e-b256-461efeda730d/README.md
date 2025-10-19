@@ -1,101 +1,557 @@
-# Tdeshpande922e1a869e21476eB256461efeda730d
+# Secure Task Management System
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A full-stack task management application built with NestJS, Angular, and NX monorepo, featuring robust role-based access control (RBAC) and JWT authentication.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## 🚀 Features
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **JWT Authentication** - Secure login with token-based authentication
+- **Role-Based Access Control (RBAC)** - Owner, Admin, and Viewer roles with hierarchical permissions
+- **Task Management** - Create, read, update, and delete tasks
+- **Organization Hierarchy** - 2-level organization structure (Parent → Child)
+- **Drag & Drop** - Reorder tasks with intuitive drag-and-drop interface
+- **Filtering & Categorization** - Filter tasks by status and category
+- **Audit Logging** - Track all actions for security and compliance
+- **Responsive Design** - Mobile-first UI with TailwindCSS
+- **Real-time Updates** - Tasks refresh automatically after operations
 
-## Run tasks
+---
 
-To run the dev server for your app, use:
+## 📋 Table of Contents
 
-```sh
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Setup Instructions](#setup-instructions)
+- [Data Model](#data-model)
+- [API Documentation](#api-documentation)
+- [Access Control](#access-control)
+- [Testing](#testing)
+- [Future Improvements](#future-improvements)
+
+---
+
+## 🏗 Architecture
+
+### NX Monorepo Structure
+```
+tdeshpande-922e1a86-9e21-476e-b256-461efeda730d/
+├── api/                    # NestJS Backend
+│   ├── src/
+│   │   ├── entities/       # TypeORM entities
+│   │   ├── modules/
+│   │   │   ├── auth/       # Authentication module
+│   │   │   ├── tasks/      # Task CRUD module
+│   │   │   └── audit/      # Audit logging module
+│   │   └── main.ts
+│
+├── apps/
+│   └── tdeshpande-.../     # Angular Frontend
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── components/
+│       │   │   │   ├── login/
+│       │   │   │   ├── dashboard/
+│       │   │   │   ├── task-list/
+│       │   │   │   └── task-form/
+│       │   │   ├── services/
+│       │   │   ├── guards/
+│       │   │   └── interceptors/
+│
+├── auth/                   # Shared RBAC Library
+│   └── src/
+│       └── lib/
+│           ├── guards/     # JWT & Roles guards
+│           └── decorators/ # Custom decorators
+│
+└── data/                   # Shared DTOs & Interfaces
+    └── src/
+        └── lib/
+            ├── dtos/       # Data transfer objects
+            └── enums/      # Shared enums
+```
+
+### Architecture Diagram
+```
+┌─────────────────────────────────────────────────────┐
+│                   Angular Frontend                   │
+│  ┌─────────────┐  ┌──────────────┐  ┌────────────┐ │
+│  │   Login     │  │  Dashboard   │  │ Task List  │ │
+│  └─────────────┘  └──────────────┘  └────────────┘ │
+│         │                  │                │        │
+│         └──────────────────┴────────────────┘        │
+│                     │                                │
+│              ┌──────▼──────┐                         │
+│              │ Auth Service │                        │
+│              │ HTTP Client  │                        │
+│              └──────┬──────┘                         │
+└─────────────────────┼────────────────────────────────┘
+                      │ JWT Token
+                      │ HTTP Requests
+┌─────────────────────▼────────────────────────────────┐
+│                  NestJS Backend                       │
+│  ┌────────────┐  ┌─────────────┐  ┌──────────────┐  │
+│  │    Auth    │  │    Tasks    │  │    Audit     │  │
+│  │  Module    │  │   Module    │  │   Module     │  │
+│  └─────┬──────┘  └──────┬──────┘  └──────┬───────┘  │
+│        │                │                 │          │
+│  ┌─────▼────────────────▼─────────────────▼───────┐  │
+│  │         JWT Strategy & RBAC Guards             │  │
+│  └─────┬──────────────────────────────────────────┘  │
+│        │                                              │
+│  ┌─────▼──────────────────────────────────────────┐  │
+│  │              TypeORM + SQLite                  │  │
+│  │  ┌──────┐  ┌──────┐  ┌──────┐  ┌───────────┐  │  │
+│  │  │ User │  │ Task │  │ Org  │  │ AuditLog  │  │  │
+│  │  └──────┘  └──────┘  └──────┘  └───────────┘  │  │
+│  └────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🛠 Tech Stack
+
+### Backend
+- **NestJS** - Progressive Node.js framework
+- **TypeORM** - ORM for database operations
+- **SQLite** - Lightweight database (easily switchable to PostgreSQL)
+- **Passport JWT** - JWT authentication strategy
+- **bcrypt** - Password hashing
+- **class-validator** - DTO validation
+
+### Frontend
+- **Angular 20** - Modern web framework
+- **RxJS** - Reactive programming
+- **TailwindCSS** - Utility-first CSS framework
+- **Angular CDK** - Drag & drop functionality
+- **TypeScript** - Type-safe JavaScript
+
+### Monorepo
+- **NX** - Smart, fast build system
+- **Jest** - Testing framework
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+
+---
+
+## 🚀 Setup Instructions
+
+### Prerequisites
+
+- Node.js (v20 or v22 recommended)
+- npm (v8+)
+- Git
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd tdeshpande-922e1a86-9e21-476e-b256-461efeda730d
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Seed the database**
+```bash
+npm run seed
+```
+
+This creates sample data:
+- **Owner**: owner@acme.com / password123
+- **Admin**: admin@acme.com / password123
+- **Viewer**: viewer@acme.com / password123
+
+4. **Start the backend**
+```bash
+npx nx serve api
+```
+Backend runs on `http://localhost:3000`
+
+5. **Start the frontend** (in a new terminal)
+```bash
 npx nx serve tdeshpande-922e1a86-9e21-476e-b256-461efeda730d
 ```
+Frontend runs on `http://localhost:4200`
 
-To create a production bundle:
+### Environment Variables
 
-```sh
-npx nx build tdeshpande-922e1a86-9e21-476e-b256-461efeda730d
+Create `.env` file in the root directory:
+```env
+JWT_SECRET=your-secret-key-change-in-production
+PORT=3000
 ```
 
-To see all available targets to run for a project, run:
+---
 
-```sh
-npx nx show project tdeshpande-922e1a86-9e21-476e-b256-461efeda730d
+## 📊 Data Model
+
+### Entity Relationship Diagram (ERD)
+```
+┌─────────────────────┐
+│   Organization      │
+│─────────────────────│
+│ id (PK)             │
+│ name                │
+│ parentId (FK)       │◄────┐
+└──────┬──────────────┘     │
+       │ 1                  │
+       │                    │ parent
+       │                    │
+       │ *                  │
+┌──────▼──────────────┐     │
+│       User          │     │
+│─────────────────────│     │
+│ id (PK)             │     │
+│ email (unique)      │     │
+│ password            │     │
+│ name                │     │
+│ role (enum)         │     │
+│ organizationId (FK) ├─────┘
+└──────┬──────────────┘
+       │ 1
+       │
+       │ *
+┌──────▼──────────────┐
+│       Task          │
+│─────────────────────│
+│ id (PK)             │
+│ title               │
+│ description         │
+│ category (enum)     │
+│ status (enum)       │
+│ order               │
+│ organizationId (FK) │
+│ createdById (FK)    │
+│ createdAt           │
+│ updatedAt           │
+└─────────────────────┘
+
+┌─────────────────────┐
+│     AuditLog        │
+│─────────────────────│
+│ id (PK)             │
+│ action              │
+│ resource            │
+│ resourceId          │
+│ userId (FK)         │
+│ metadata (JSON)     │
+│ createdAt           │
+└─────────────────────┘
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Enums
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**UserRole**
+- `Owner` - Full access, can delete tasks
+- `Admin` - Can create and edit tasks
+- `Viewer` - Read-only access
 
-## Add new projects
+**TaskStatus**
+- `pending` - Not started
+- `in-progress` - Currently working
+- `completed` - Finished
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+**TaskCategory**
+- `Work` - Work-related tasks
+- `Personal` - Personal tasks
 
-Use the plugin's generator to create new projects.
+---
 
-To generate a new application, use:
+## 📡 API Documentation
 
-```sh
-npx nx g @nx/angular:app demo
+### Base URL
+```
+http://localhost:3000/api
 ```
 
-To generate a new library, use:
+### Authentication
 
-```sh
-npx nx g @nx/angular:lib mylib
+All endpoints (except login) require JWT authentication via Bearer token:
+```
+Authorization: Bearer <token>
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### Endpoints
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+#### **POST /auth/login**
+Authenticate user and receive JWT token.
 
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+**Request:**
+```json
+{
+  "email": "owner@acme.com",
+  "password": "password123"
+}
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+**Response:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "uuid",
+    "email": "owner@acme.com",
+    "name": "John Owner",
+    "role": "Owner",
+    "organizationId": "uuid"
+  }
+}
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Install Nx Console
+#### **GET /tasks**
+Get all tasks accessible to the current user.
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+**Headers:**
+```
+Authorization: Bearer <token>
+```
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "title": "Setup project",
+    "description": "Initialize repository",
+    "category": "Work",
+    "status": "completed",
+    "order": 1,
+    "organizationId": "uuid",
+    "createdById": "uuid",
+    "createdAt": "2025-10-19T12:00:00Z",
+    "updatedAt": "2025-10-19T12:00:00Z"
+  }
+]
+```
 
-## Useful links
+---
 
-Learn more:
+#### **POST /tasks**
+Create a new task (Admin/Owner only).
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Headers:**
+```
+Authorization: Bearer <token>
+```
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Request:**
+```json
+{
+  "title": "New Task",
+  "description": "Task description",
+  "category": "Work",
+  "status": "pending"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "uuid",
+  "title": "New Task",
+  "description": "Task description",
+  "category": "Work",
+  "status": "pending",
+  "order": 0,
+  "organizationId": "uuid",
+  "createdById": "uuid",
+  "createdAt": "2025-10-19T12:00:00Z",
+  "updatedAt": "2025-10-19T12:00:00Z"
+}
+```
+
+---
+
+#### **PUT /tasks/:id**
+Update an existing task (Admin/Owner only).
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Request:**
+```json
+{
+  "status": "in-progress",
+  "order": 2
+}
+```
+
+**Response:**
+```json
+{
+  "id": "uuid",
+  "title": "New Task",
+  "status": "in-progress",
+  "order": 2,
+  ...
+}
+```
+
+---
+
+#### **DELETE /tasks/:id**
+Delete a task (Owner only).
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Response:**
+```
+204 No Content
+```
+
+---
+
+## 🔐 Access Control Implementation
+
+### Role Hierarchy
+```
+Owner (Level 3)
+  ↓ inherits all permissions
+Admin (Level 2)
+  ↓ inherits all permissions
+Viewer (Level 1)
+```
+
+### Permission Matrix
+
+| Action | Viewer | Admin | Owner |
+|--------|--------|-------|-------|
+| View Tasks (own org) | ✅ | ✅ | ✅ |
+| View Tasks (all org) | ❌ | ✅ | ✅ |
+| Create Task | ❌ | ✅ | ✅ |
+| Update Task | ❌ | ✅ | ✅ |
+| Delete Task | ❌ | ❌ | ✅ |
+| View Audit Logs | ❌ | ✅ | ✅ |
+
+### Implementation Details
+
+**Backend Guards:**
+1. `JwtAuthGuard` - Validates JWT token
+2. `RolesGuard` - Checks user role permissions
+
+**Decorators:**
+```typescript
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN, UserRole.OWNER)
+@Post()
+async createTask(@Body() dto: CreateTaskDto) {
+  // Only Admin and Owner can access
+}
+```
+
+**Frontend Guards:**
+```typescript
+{
+  path: 'dashboard',
+  component: DashboardComponent,
+  canActivate: [authGuard]
+}
+```
+
+### Organization Scoping
+
+- Tasks are automatically scoped to user's organization
+- Viewers can only see tasks from their own organization
+- Admins/Owners can see tasks from all child organizations
+
+---
+
+## 🧪 Testing
+
+### Run All Tests
+```bash
+# Backend tests
+npx nx test api
+
+# Frontend tests
+npx nx test tdeshpande-922e1a86-9e21-476e-b256-461efeda730d
+
+# Shared library tests
+npx nx test auth
+npx nx test data
+```
+
+### Test Coverage
+
+**Backend:**
+- ✅ Authentication service (login, JWT)
+- ✅ RBAC guards (role hierarchy)
+- ✅ Task CRUD operations
+- ✅ Access control enforcement
+
+**Frontend:**
+- ✅ Auth service (login, logout, token management)
+- ✅ Login component (form validation, error handling)
+- ✅ HTTP interceptor (JWT attachment)
+- ✅ Auth guard (route protection)
+
+---
+
+## 🚀 Future Improvements
+
+### Production-Ready Security
+- [ ] JWT refresh tokens
+- [ ] CSRF protection
+- [ ] Rate limiting
+- [ ] Input sanitization
+- [ ] Helmet.js security headers
+- [ ] HTTPS enforcement
+
+### Advanced Features
+- [ ] Role delegation (dynamic role assignment)
+- [ ] Advanced search and filtering
+- [ ] Task comments and attachments
+- [ ] Email notifications
+- [ ] Task templates
+- [ ] Bulk operations
+- [ ] Export tasks (CSV/PDF)
+
+### Performance Optimization
+- [ ] Database indexing
+- [ ] Caching layer (Redis)
+- [ ] Pagination for large datasets
+- [ ] Lazy loading
+- [ ] GraphQL API option
+
+### DevOps
+- [ ] Docker containerization
+- [ ] CI/CD pipeline
+- [ ] Database migrations
+- [ ] Environment-based configs
+- [ ] Monitoring and logging (ELK stack)
+- [ ] Load testing
+
+### UI/UX Enhancements
+- [ ] Dark/light mode toggle
+- [ ] Task completion charts
+- [ ] Keyboard shortcuts
+- [ ] Undo/redo functionality
+- [ ] Mobile app (React Native/Ionic)
+
+---
+
+## 📝 License
+
+This project is for assessment purposes.
+
+---
+
+## 👥 Contributors
+
+- Tishya Deshpande
+
+---
+
+## 📞 Support
+
+For issues or questions, please create an issue in the repository.
