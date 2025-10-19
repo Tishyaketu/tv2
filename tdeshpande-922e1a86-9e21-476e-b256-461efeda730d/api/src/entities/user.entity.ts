@@ -1,12 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Organization } from './organization.entity';
 import { Task } from './task.entity';
-
-export enum UserRole {
-  OWNER = 'Owner',
-  ADMIN = 'Admin',
-  VIEWER = 'Viewer'
-}
+import { UserRole } from '@tdeshpande-922e1a86-9e21-476e-b256-461efeda730d/data';
 
 @Entity()
 export class User {

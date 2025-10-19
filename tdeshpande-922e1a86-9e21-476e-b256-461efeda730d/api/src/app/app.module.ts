@@ -7,6 +7,8 @@ import { User } from '../entities/user.entity';
 import { Task } from '../entities/task.entity';
 import { AuditLog } from '../entities/audit-log.entity';
 import { AuthModule } from '../modules/auth/auth.module';
+import { TasksModule } from '../modules/tasks/tasks.module';
+import { AuditModule } from '../modules/audit/audit.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { AuthModule } from '../modules/auth/auth.module';
       logging: false,
     }),
     AuthModule,
+    TasksModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],

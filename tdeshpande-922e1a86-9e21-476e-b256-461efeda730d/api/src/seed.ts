@@ -3,8 +3,9 @@ import { AppModule } from './app/app.module';
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Organization } from './entities/organization.entity';
-import { User, UserRole } from './entities/user.entity';
-import { Task, TaskCategory, TaskStatus } from './entities/task.entity';
+import { User } from './entities/user.entity';
+import { Task } from './entities/task.entity';
+import { UserRole, TaskCategory, TaskStatus } from '@tdeshpande-922e1a86-9e21-476e-b256-461efeda730d/data';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -12,7 +13,7 @@ async function bootstrap() {
 
   console.log('🌱 Seeding database...');
 
-    // Clear existing data
+  // Clear existing data
   await dataSource.getRepository(Task).clear();
   await dataSource.getRepository(User).clear();
   await dataSource.getRepository(Organization).clear();

@@ -1,17 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Organization } from './organization.entity';
-
-export enum TaskCategory {
-  WORK = 'Work',
-  PERSONAL = 'Personal'
-}
-
-export enum TaskStatus {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in-progress',
-  COMPLETED = 'completed'
-}
+import { TaskCategory, TaskStatus } from '@tdeshpande-922e1a86-9e21-476e-b256-461efeda730d/data';
 
 @Entity()
 export class Task {
