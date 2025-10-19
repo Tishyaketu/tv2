@@ -11,10 +11,21 @@
   justify-content: space-between;
   align-items: center;
 
+  @media (max-width: 640px) {
+    padding: 16px 20px;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
   h1 {
     margin: 0;
     font-size: 24px;
     color: #333;
+
+    @media (max-width: 640px) {
+      font-size: 20px;
+    }
   }
 
   .user-info {
@@ -22,22 +33,39 @@
     align-items: center;
     gap: 16px;
 
-    span {
-      font-size: 14px;
-      color: #666;
+    @media (max-width: 640px) {
+      width: 100%;
+      justify-content: space-between;
     }
 
-    button {
-      padding: 8px 16px;
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .user-role {
+      font-size: 12px;
+      padding: 4px 12px;
       background-color: #667eea;
+      color: white;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      padding: 8px 16px;
+      background-color: #ef4444;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.3s;
 
       &:hover {
-        background-color: #5568d3;
+        background-color: #dc2626;
       }
     }
   }
@@ -45,4 +73,10 @@
 
 .dashboard-content {
   padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 640px) {
+    padding: 20px;
+  }
 }

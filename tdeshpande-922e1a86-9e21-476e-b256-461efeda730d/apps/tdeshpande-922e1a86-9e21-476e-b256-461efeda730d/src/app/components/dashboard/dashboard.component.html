@@ -3,13 +3,18 @@
     <h1>Task Dashboard</h1>
     @if (currentUser$ | async; as user) {
       <div class="user-info">
-        <span>{{ user.name }} ({{ user.role }})</span>
-        <button (click)="logout()">Logout</button>
+        <span class="user-name">{{ user.name }}</span>
+        <span class="user-role">{{ user.role }}</span>
+        <button (click)="logout()" class="logout-btn">Logout</button>
       </div>
     }
   </header>
 
   <div class="dashboard-content">
-    <p>Dashboard content will be implemented in MILESTONE 6</p>
+    @if (canCreateTasks()) {
+      <app-task-form></app-task-form>
+    }
+    
+    <app-task-list></app-task-list>
   </div>
 </div>

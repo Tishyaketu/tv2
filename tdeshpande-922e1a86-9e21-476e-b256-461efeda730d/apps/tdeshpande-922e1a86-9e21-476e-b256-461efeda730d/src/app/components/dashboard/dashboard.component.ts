@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TaskFormComponent } from '../task-form/task-form.component';
+import { TaskListComponent } from '../task-list/task-list.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TaskFormComponent, TaskListComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -19,5 +21,10 @@ export class DashboardComponent {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  canCreateTasks(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'Owner' || user?.role === 'Admin';
   }
 }
