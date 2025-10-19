@@ -1,0 +1,15 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <h1>Task Dashboard</h1>
+    @if (currentUser$ | async; as user) {
+      <div class="user-info">
+        <span>{{ user.name }} ({{ user.role }})</span>
+        <button (click)="logout()">Logout</button>
+      </div>
+    }
+  </header>
+
+  <div class="dashboard-content">
+    <p>Dashboard content will be implemented in MILESTONE 6</p>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+{
+  "name": "@tdeshpande-922e1a86-9e21-476e-b256-461efeda730d/source",
+  "version": "0.0.0",
+  "scripts": {
+    "seed": "ts-node -r tsconfig-paths/register api/src/seed.ts"
+  },
+  "dependencies": {
+    "ts-node": "^10.0.0",
+    "tsconfig-paths": "^4.0.0"
+  }
+}
