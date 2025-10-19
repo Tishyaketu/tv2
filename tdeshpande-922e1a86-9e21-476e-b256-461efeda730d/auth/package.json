@@ -1,0 +1,11 @@
+{
+  "name": "@tdeshpande-922e1a86-9e21-476e-b256-461efeda730d/auth",
+  "version": "0.0.1",
+  "private": true,
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}
