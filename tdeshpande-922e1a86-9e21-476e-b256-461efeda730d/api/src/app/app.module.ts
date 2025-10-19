@@ -6,6 +6,7 @@ import { Organization } from '../entities/organization.entity';
 import { User } from '../entities/user.entity';
 import { Task } from '../entities/task.entity';
 import { AuditLog } from '../entities/audit-log.entity';
+import { AuthModule } from '../modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,9 +14,10 @@ import { AuditLog } from '../entities/audit-log.entity';
       type: 'sqlite',
       database: 'database.sqlite',
       entities: [Organization, User, Task, AuditLog],
-      synchronize: true, // Dev only - creates tables automatically
-      logging: true,
+      synchronize: true,
+      logging: false,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
