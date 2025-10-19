@@ -1,0 +1,92 @@
+<div class="task-list-container">
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-group">
+      <label>Category:</label>
+      <select (change)="onCategoryChange($any($event.target).value)" class="filter-select">
+        <option value="all">All</option>
+        <option [value]="TaskCategory.WORK">Work</option>
+        <option [value]="TaskCategory.PERSONAL">Personal</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Status:</label>
+      <select (change)="onStatusChange($any($event.target).value)" class="filter-select">
+        <option value="all">All</option>
+        <option [value]="TaskStatus.PENDING">Pending</option>
+        <option [value]="TaskStatus.IN_PROGRESS">In Progress</option>
+        <option [value]="TaskStatus.COMPLETED">Completed</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Task List -->
+  <div 
+    cdkDropList 
+    class="task-list"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @if (filteredTasks.length === 0) {
+      <div class="empty-state">
+        <p>No tasks found. Create your first task!</p>
+      </div>
+    }
+
+    @for (task of filteredTasks; track task.id) {
+      <div class="task-card" cdkDrag>
+        <div class="drag-handle" cdkDragHandle>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="5" cy="5" r="1.5"/>
+            <circle cx="5" cy="10" r="1.5"/>
+            <circle cx="5" cy="15" r="1.5"/>
+            <circle cx="10" cy="5" r="1.5"/>
+            <circle cx="10" cy="10" r="1.5"/>
+            <circle cx="10" cy="15" r="1.5"/>
+          </svg>
+        </div>
+
+        <div class="task-content">
+          <div class="task-header">
+            <h3>{{ task.title }}</h3>
+            <div class="task-badges">
+              <span class="badge" [ngClass]="getCategoryColor(task.category)">
+                {{ task.category }}
+              </span>
+              <span class="badge" [ngClass]="getStatusColor(task.status)">
+                {{ task.status }}
+              </span>
+            </div>
+          </div>
+
+          @if (task.description) {
+            <p class="task-description">{{ task.description }}</p>
+          }
+
+          <div class="task-actions">
+            @if (canEdit()) {
+              <select 
+                [value]="task.status"
+                (change)="updateTaskStatus(task, $any($event.target).value)"
+                class="status-select"
+              >
+                <option [value]="TaskStatus.PENDING">Pending</option>
+                <option [value]="TaskStatus.IN_PROGRESS">In Progress</option>
+                <option [value]="TaskStatus.COMPLETED">Completed</option>
+              </select>
+            }
+
+            @if (canDelete()) {
+              <button 
+                (click)="deleteTask(task.id)"
+                class="delete-btn"
+              >
+                Delete
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
